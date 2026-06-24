@@ -117,7 +117,6 @@
         let score = 0;
         let bestScore = 0;
 
-        // Загрузка рекорда из CloudStorage Telegram
         if (tg.CloudStorage) {
             tg.CloudStorage.getItem('best_score_2048', (err, value) => {
                 if (!err && value) {

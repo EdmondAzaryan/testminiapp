@@ -172,19 +172,26 @@
             }
         }
 
-        function updateScore(amount) {
+         function updateScore(amount) {
             score += amount;
             document.getElementById('score').innerText = score;
             if (score > bestScore) {
                 bestScore = score;
                 document.getElementById('best-score').innerText = bestScore;
                 
-                // Сохраняем рекорд в безопасное облако Telegram CloudStorage
                 if (tg && tg.CloudStorage) {
                     tg.CloudStorage.setItem('best_score_2048', String(bestScore));
                 }
+
+                // Отправляем новые очки на твой Flask-сервер
+                fetch(`${SERVER_URL}/save_score`, { 
+                    method: "POST", 
+                    headers: { "Content-Type": "application/json" }, 
+                    body: JSON.stringify({ user_id: userId, score: bestScore }) 
+                }).catch(e => {});
             }
         }
+
 
         function slide(row) {
             let arr = row.filter(val => val);

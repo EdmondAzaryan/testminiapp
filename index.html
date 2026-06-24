@@ -76,6 +76,7 @@
             font-size: 26px;
             font-weight: bold;
             transition: all 0.08s ease;
+            z-index: 10;
         }
         .tile-2 { background: #eee4da; color: #776e65; }
         .tile-4 { background: #ede0c8; color: #776e65; }
@@ -109,15 +110,17 @@
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        if(tg.expand) tg.expand();
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            if(tg.expand) tg.expand();
+        }
 
         let board = Array(4).fill().map(() => Array(4).fill(0));
         let score = 0;
         let bestScore = 0;
 
-        if (tg.CloudStorage) {
+        if (tg && tg.CloudStorage) {
             tg.CloudStorage.getItem('best_score_2048', (err, value) => {
                 if (!err && value) {
                     bestScore = parseInt(value, 10);
@@ -171,7 +174,7 @@
             if (score > bestScore) {
                 bestScore = score;
                 document.getElementById('best-score').innerText = bestScore;
-                if (tg.CloudStorage) {
+                if (tg && tg.CloudStorage) {
                     tg.CloudStorage.setItem('best_score_2048', String(bestScore));
                 }
             }
@@ -196,7 +199,7 @@
 
             if (direction === 'left' || direction === 'right') {
                 for (let i = 0; i < 4; i++) {
-                    let row = board[i];
+                    let row = [...board[i]];
                     if (direction === 'right') row.reverse();
                     let newRow = slide(row);
                     if (direction === 'right') newRow.reverse();
@@ -208,6 +211,7 @@
                     if (direction === 'down') col.reverse();
                     let newCol = slide(col);
                     if (direction === 'down') newCol.reverse();
+                    
                     for (let r = 0; r < 4; r++) {
                         board[r][c] = newCol[r];
                     }
@@ -229,28 +233,48 @@
                     if (c < 3 && board[r][c] === board[r][c + 1]) return;
                 }
             }
-            if(tg.showAlert) tg.showAlert(`Игра окончена! Счет: ${score}`);
+            if(tg && tg.showAlert) tg.showAlert(`Игра окончена! Счет: ${score}`);
             else alert(`Игра окончена! Счет: ${score}`);
             initGame();
         }
 
-        let touchStart = null;
-        window.addEventListener('touchstart', e => {
-            touchStart = { x: e.touches.clientX, y: e.touches.clientY };
-        });
-        window.addEventListener('touchend', e => {
-            if (!touchStart) return;
-            let dx = e.changedTouches.clientX - touchStart.x;
-            let dy = e.changedTouches.clientY - touchStart.y;
-            if (Math.abs(dx) > Math.abs(dy)) {
-                if (Math.abs(dx) > 30) move(dx > 0 ? 'right' : 'left');
+        // ИСПРАВЛЕНО: Новый сверхустойчивый мобильный трекер свайпов
+        let startX = 0;
+        let startY = 0;
+
+        window.addEventListener('touchstart', (e) => {
+            startX = e.changedTouches[0].clientX;
+            startY = e.changedTouches[0].clientY;
+        }, { passive: true });
+
+        window.addEventListener('touchend', (e) => {
+            if (!startX || !startY) return;
+
+            let endX = e.changedTouches[0].clientX;
+            let endY = e.changedTouches[0].clientY;
+
+            let diffX = endX - startX;
+            let diffY = endY - startY;
+
+            // Проверяем, был ли жест достаточно длинным (более 30 пикселей)
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (Math.abs(diffX) > 30) {
+                    move(diffX > 0 ? 'right' : 'left');
+                }
             } else {
-                if (Math.abs(dy) > 30) move(dy > 0 ? 'down' : 'up');
+                if (Math.abs(diffY) > 30) {
+                    move(diffY > 0 ? 'down' : 'up');
+                }
             }
-            touchStart = null;
-        });
+
+            // Сбрасываем координаты
+            startX = 0;
+            startY = 0;
+        }, { passive: true });
 
         initGame();
+    </script>
+;
     </script>
 </body>
 </html>

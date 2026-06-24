@@ -172,7 +172,7 @@
             }
         }
 
-                 function updateScore(amount) {
+       function updateScore(amount) {
             score += amount;
             document.getElementById('score').innerText = score;
             if (score > bestScore) {
@@ -183,21 +183,23 @@
                     tg.CloudStorage.setItem('best_score_2048', String(bestScore));
                 }
 
-                // Получаем имя игрока из Telegram, если его нет — пишем "Игрок"
-                const userName = tg?.initDataUnsafe?.user?.first_name || "Игрок";
+                // Извлекаем пользователя точно так же, как в вашем рабочем тесте
+                const user = tg.initDataUnsafe.user;
+                const userName = user ? user.first_name : "Игрок";
 
-                // Отправляем очки и имя на Flask-сервер
+                // Отправляем очки и реальное имя на Flask-сервер
                 fetch(`${SERVER_URL}/save_score`, { 
                     method: "POST", 
                     headers: { "Content-Type": "application/json" }, 
                     body: JSON.stringify({ 
                         user_id: userId, 
-                        username: userName, // Добавили передачу имени
+                        username: userName, 
                         score: bestScore 
                     }) 
                 }).catch(e => {});
             }
         }
+
 
 
 

@@ -19,166 +19,67 @@
             overflow: hidden;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s;
         }
-
-        /* ================= СТИЛИ ЗОЛОТОЙ ТЕМЫ (ИЗ МАГАЗИНА) ================= */
-        body.theme-gold { background-color: #fff9e6; color: #b8860b; }
-        body.theme-gold #menu-screen-overlay { background-color: #fff9e6; }
-        body.theme-gold #game-container { background-color: #ffd700; border: 3px solid #daa520; }
-        body.theme-gold .grid-cell { background: rgba(255, 255, 255, 0.5); }
-        body.theme-gold .score-box { background: #daa520; }
-        body.theme-gold .menu-title-text { color: #daa520; }
 
         /* ================= СТИЛИ МЕНЮ (ПОВЕРХ ИГРЫ) ================= */
         #menu-screen-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #faf8ef;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 60px;
-            box-sizing: border-box;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #faf8ef; z-index: 9999; display: flex;
+            flex-direction: column; align-items: center; padding-top: 40px; box-sizing: border-box;
         }
         .menu-btn-settings {
-            position: absolute; top: 15px; left: 0;
-            background-color: #f0925c; color: white;
-            border: none; border-radius: 0 8px 8px 0;
-            padding: 10px 15px; font-size: 24px; cursor: pointer;
+            position: absolute; top: 15px; left: 0; background-color: #f0925c; color: white;
+            border: none; border-radius: 0 8px 8px 0; padding: 10px 15px; font-size: 24px; cursor: pointer;
         }
         .menu-title-text {
-            color: #776e65; font-size: 42px; font-weight: 900;
-            margin-bottom: 40px; letter-spacing: 2px;
+            color: #776e65; font-size: 42px; font-weight: 900; margin-bottom: 25px; letter-spacing: 2px;
         }
         .menu-btn-base {
-            width: 280px; border: none; border-radius: 6px;
-            color: white; font-size: 18px; font-weight: bold;
-            display: flex; align-items: center; justify-content: center;
-            gap: 10px; padding: 15px; cursor: pointer;
+            width: 280px; border: none; border-radius: 6px; color: white; font-size: 18px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; cursor: pointer;
             transition: transform 0.1s;
         }
         .menu-btn-base:active { transform: scale(0.97); }
-        .btn-ads { background-color: #ea5e6a; margin-bottom: 30px; }
-        .btn-shop { background-color: #f0925c; margin-bottom: 40px; }
+        .btn-ads { background-color: #ea5e6a; margin-bottom: 25px; }
+        .btn-shop { background-color: #e6a23c; margin-bottom: 25px; } 
         .btn-cont { background-color: #e88f5d; margin-bottom: 15px; }
         .btn-rest { background-color: #cd6a3d; width: 250px; }
         .menu-subtitle {
-            color: #a39b92; font-size: 12px; font-weight: bold;
-            text-transform: uppercase; margin-bottom: 10px;
+            color: #a39b92; font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px;
         }
         .menu-split-container {
-            display: flex; width: 320px; height: 65px; margin-bottom: 30px;
+            display: flex; width: 320px; height: 65px; margin-bottom: 25px;
         }
         .split-left {
-            flex: 0 0 calc(50% + 14px); background-color: #a05ef8;
-            border: none; color: white; font-weight: bold; font-size: 20px;
-            clip-path: polygon(0 0, 100% 0, calc(100% - 28px) 100%, 0 100%);
-            border-radius: 6px 0 0 6px; padding-right: 20px; cursor: pointer;
+            flex: 0 0 calc(50% + 14px); background-color: #a05ef8; border: none; color: white; font-weight: bold; font-size: 20px;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 28px) 100%, 0 100%); border-radius: 6px 0 0 6px; padding-right: 20px; cursor: pointer;
         }
         .split-right {
-            flex: 0 0 calc(50% + 14px); background-color: #61a0f8;
-            border: none; color: white; font-weight: bold; font-size: 14px;
-            margin-left: -24px;
-            clip-path: polygon(28px 0, 100% 0, 100% 100%, 0 100%);
-            border-radius: 0 6px 6px 0; padding-left: 20px; cursor: pointer;
+            flex: 0 0 calc(50% + 14px); background-color: #61a0f8; border: none; color: white; font-weight: bold; font-size: 14px;
+            margin-left: -24px; clip-path: polygon(28px 0, 100% 0, 100% 100%, 0 100%); border-radius: 0 6px 6px 0; padding-left: 20px; cursor: pointer;
         }
-        .split-left:active, .split-right:active { opacity: 0.8; }
 
         /* ================= СТИЛИ ИГРЫ ================= */
-        .header {
-            width: 320px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .header-left {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .btn-row {
-            display: flex;
-            gap: 5px;
-        }
+        .header { width: 320px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .header-left { display: flex; flex-direction: column; gap: 5px; }
+        .btn-row { display: flex; gap: 5px; }
         .btn-back-menu, .btn-undo {
-            background: #8f7a66;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 12px;
+            background: #8f7a66; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px;
         }
-        .btn-undo:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        .score-container {
-            display: flex;
-            gap: 10px;
-        }
-        .score-box {
-            background: #bbada0;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 5px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: bold;
-            min-width: 60px;
-        }
-        .score-box span {
-            display: block;
-            font-size: 18px;
-        }
-        #game-container {
-            width: 320px;
-            height: 320px;
-            background-color: #bbada0;
-            border-radius: 6px;
-            position: relative;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        .grid-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
+        .btn-undo:disabled { background: #ccc; cursor: not-allowed; }
+        .score-container { display: flex; gap: 10px; }
+        .score-box { background: #bbada0; color: white; padding: 5px 12px; border-radius: 5px; text-align: center; font-size: 13px; font-weight: bold; min-width: 60px; }
+        .score-box span { display: block; font-size: 18px; }
+        #game-container { width: 320px; height: 320px; background-color: #bbada0; border-radius: 6px; position: relative; padding: 8px; box-sizing: border-box; }
+        .grid-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
         .grid-row:last-child { margin-bottom: 0; }
-        .grid-cell {
-            width: 68px;
-            height: 68px;
-            background: rgba(238, 228, 218, 0.35);
-            border-radius: 4px;
-        }
-        .tile {
-            width: 68px;
-            height: 68px;
-            border-radius: 4px;
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 26px;
-            font-weight: bold;
-            transition: all 0.08s ease;
-            z-index: 10;
-        }
-        .tile-2 { background: #eee4da; color: #776e65; }
-        .tile-4 { background: #ede0c8; color: #776e65; }
-        .tile-8 { background: #f2b179; color: #f9f6f2; }
-        .tile-16 { background: #f59563; color: #f9f6f2; }
-        .tile-32 { background: #f67c5f; color: #f9f6f2; }
-        .tile-64 { background: #f65e3b; color: #f9f6f2; }
-        .tile-128 { background: #edcf72; color: #f9f6f2; font-size: 22px; }
-        .tile-256 { background: #edcc61; color: #f9f6f2; font-size: 22px; }
-        .tile-512 { background: #edc850; color: #f9f6f2; font-size: 22px; }
-        .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 18px; }
+        .grid-cell { width: 68px; height: 68px; background: rgba(238, 228, 218, 0.35); border-radius: 4px; }
+        .tile { width: 68px; height: 68px; border-radius: 4px; position: absolute; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: bold; transition: all 0.08s ease; z-index: 10; }
+        .tile-2 { background: #eee4da; color: #776e65; } .tile-4 { background: #ede0c8; color: #776e65; }
+        .tile-8 { background: #f2b179; color: #f9f6f2; } .tile-16 { background: #f59563; color: #f9f6f2; }
+        .tile-32 { background: #f67c5f; color: #f9f6f2; } .tile-64 { background: #f65e3b; color: #f9f6f2; }
+        .tile-128 { background: #edcf72; color: #f9f6f2; font-size: 22px; } .tile-256 { background: #edcc61; color: #f9f6f2; font-size: 22px; }
+        .tile-512 { background: #edc850; color: #f9f6f2; font-size: 22px; } .tile-1024 { background: #edc53f; color: #f9f6f2; font-size: 18px; }
         .tile-2048 { background: #edc22e; color: #f9f6f2; font-size: 18px; }
     </style>
 </head>
@@ -186,30 +87,16 @@
 
     <div id="menu-screen-overlay">
         <button class="menu-btn-settings" onclick="alert('Настройки')">⚙</button>
-
         <div class="menu-title-text">МЕНЮ</div>
-
-        <button class="menu-btn-base btn-ads" onclick="alert('Без рекламы')">
-            🚫 БЕЗ РЕКЛАМЫ
-        </button>
-
+        <button class="menu-btn-base btn-ads" onclick="alert('Без рекламы')">🚫 БЕЗ РЕКЛАМЫ</button>
+        <button class="menu-btn-base btn-shop" onclick="openTelegramShop()">🛒 МАГАЗИН (⭐)</button>
         <div class="menu-subtitle">Другие режимы игры</div>
         <div class="menu-split-container">
             <button class="split-left" onclick="alert('Вызовы')">ВЫЗОВЫ</button>
             <button class="split-right" onclick="alert('Мультиплеер')">МУЛЬТИПЛЕЕР<br>VS</button>
         </div>
-
-        <button class="menu-btn-base btn-shop" onclick="openTelegramShop()">
-            🛒 МАГАЗИН (Telegram ⭐)
-        </button>
-
-        <button class="menu-btn-base btn-cont" onclick="hideMenuAndPlay()">
-            ПРОДОЛЖИТЬ ▶
-        </button>
-        
-        <button class="menu-btn-base btn-rest" onclick="restartFromMenu()">
-            ↻ ПЕРЕЗАПУСТИТЬ
-        </button>
+        <button class="menu-btn-base btn-cont" onclick="hideMenuAndPlay()">ПРОДОЛЖИТЬ ▶</button>
+        <button class="menu-btn-base btn-rest" onclick="restartFromMenu()">↻ ПЕРЕЗАПУСТИТЬ</button>
     </div>
 
     <div class="header">
@@ -235,112 +122,77 @@
     </div>
 
     <script>
-        // --- Логика Меню ---
-        function hideMenuAndPlay() {
-            document.getElementById('menu-screen-overlay').style.display = 'none';
-        }
-
-        function showMenu() {
-            document.getElementById('menu-screen-overlay').style.display = 'flex';
-        }
-
-        function restartFromMenu() {
-            if(confirm("Начать новую игру? Текущий счет сбросится.")) {
-                initGame();
-                hideMenuAndPlay();
-            }
-        }
-
+        function hideMenuAndPlay() { document.getElementById('menu-screen-overlay').style.display = 'none'; }
+        function showMenu() { document.getElementById('menu-screen-overlay').style.display = 'flex'; }
+        function restartFromMenu() { if(confirm("Начать новую игру? Текущий счет сбросится.")) { initGame(); hideMenuAndPlay(); } }
         function openTelegramShop() {
-            if(tg && tg.sendData) {
-                tg.showAlert("Перейди в чат с ботом и напиши /shop для покупок за Telegram Stars!");
-            } else {
-                alert("Покупки доступны только внутри Telegram.");
-            }
+            if(tg && tg.showAlert) tg.showAlert("Вернись в чат с ботом и напиши /shop, чтобы купить отмены ходов за Звезды!");
+            else alert("Магазин работает только в Telegram!");
         }
 
-        // --- Логика Игры и API ---
         const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            if(tg.expand) tg.expand();
-        }
+        if (tg) { tg.ready(); if(tg.expand) tg.expand(); }
         const userId = tg?.initDataUnsafe?.user?.id || 12345;
-        const userName = tg?.initDataUnsafe?.user?.username || tg?.initDataUnsafe?.user?.first_name || "Unknown";
+        const userName = tg?.initDataUnsafe?.user?.username || "Unknown";
         
-        // ВАЖНО: Замени localhost на твою ссылку из localtunnel/ngrok!
-        const SERVER_URL = "http://localhost:8000"; 
+        // ВАЖНО: ЗАМЕНИ ЭТУ ССЫЛКУ НА ТВОЙ NGROK!
+        const SERVER_URL = "https://ТВОЙ-NGROK-АДРЕС.ngrok-free.app"; 
         
         let board = Array(4).fill().map(() => Array(4).fill(0));
-        let score = 0;
-        let bestScore = 0;
+        let score = 0, bestScore = 0, undosCount = 0;
+        let previousBoard = null, previousScore = 0;
 
-        // Переменные для магазина
-        let inventory = { undos: 0, theme: 'default' };
-        let previousBoard = null;
-        let previousScore = 0;
-
-        // Загрузка инвентаря с Flask сервера
         function loadData() {
-            if (tg && tg.CloudStorage) {
-                tg.CloudStorage.getItem('best_score_2048', (err, value) => {
-                    if (!err && value) {
-                        bestScore = parseInt(value, 10);
-                        document.getElementById('best-score').innerText = bestScore;
-                    }
-                });
-            }
+            fetch(`${SERVER_URL}/get_score/${userId}`)
+                .then(res => res.json())
+                .then(data => { bestScore = data.best_score || 0; document.getElementById('best-score').innerText = bestScore; })
+                .catch(e => console.log(e));
 
             fetch(`${SERVER_URL}/get_inventory/${userId}`)
                 .then(res => res.json())
-                .then(data => {
-                    inventory = data;
-                    if (inventory.theme === 'gold') {
-                        document.body.classList.add('theme-gold');
-                    }
-                    updateUndoButton();
-                }).catch(e => console.log("Не удалось загрузить инвентарь:", e));
+                .then(data => { undosCount = data.undos || 0; updateUndoButton(); })
+                .catch(e => console.log(e));
         }
 
         function updateUndoButton() {
             const btn = document.getElementById('btn-undo');
-            btn.innerText = `🔙 Назад (${inventory.undos})`;
-            btn.disabled = inventory.undos <= 0 || !previousBoard;
+            btn.innerText = `🔙 Назад (${undosCount})`;
+            btn.disabled = undosCount <= 0 || !previousBoard;
+        }
+
+        function useUndo() {
+            if (undosCount > 0 && previousBoard) {
+                fetch(`${SERVER_URL}/use_undo`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        undosCount = data.undos;
+                        board = JSON.parse(previousBoard);
+                        score = previousScore;
+                        document.getElementById('score').innerText = score;
+                        previousBoard = null;
+                        updateUndoButton();
+                        drawBoard();
+                    }
+                }).catch(e => console.log(e));
+            }
         }
 
         function initGame() {
             board = Array(4).fill().map(() => Array(4).fill(0));
-            score = 0;
-            previousBoard = null;
+            score = 0; previousBoard = null;
             document.getElementById('score').innerText = 0;
-            updateUndoButton();
-            addTile();
-            addTile();
-            drawBoard();
-        }
-
-        function useUndo() {
-            if (inventory.undos > 0 && previousBoard) {
-                inventory.undos--; // Локальное списание
-                board = JSON.parse(previousBoard);
-                score = previousScore;
-                document.getElementById('score').innerText = score;
-                
-                previousBoard = null; // 1 отмена за раз
-                updateUndoButton();
-                drawBoard();
-            }
+            updateUndoButton(); addTile(); addTile(); drawBoard();
         }
 
         function addTile() {
-            let emptyCells = [];
-            for(let r=0; r<4; r++) {
-                for(let c=0; c<4; c++) {
-                    if(board[r][c] === 0) emptyCells.push({r, c});
-                }
-            }
-            if(emptyCells.length > 0) {
-                let cell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            let empty = [];
+            for(let r=0; r<4; r++) for(let c=0; c<4; c++) if(board[r][c] === 0) empty.push({r, c});
+            if(empty.length > 0) {
+                let cell = empty[Math.floor(Math.random() * empty.length)];
                 board[cell.r][cell.c] = Math.random() < 0.9 ? 2 : 4;
             }
         }
@@ -354,8 +206,7 @@
                         let tile = document.createElement('div');
                         tile.className = `tile tile-${board[r][c]}`;
                         tile.innerText = board[r][c];
-                        tile.style.top = `${8 + r * 76}px`;
-                        tile.style.left = `${8 + c * 76}px`;
+                        tile.style.top = `${8 + r * 76}px`; tile.style.left = `${8 + c * 76}px`;
                         container.appendChild(tile);
                     }
                 }
@@ -363,20 +214,11 @@
         }
 
          function updateScore(amount) {
-            score += amount;
-            document.getElementById('score').innerText = score;
+            score += amount; document.getElementById('score').innerText = score;
             if (score > bestScore) {
-                bestScore = score;
-                document.getElementById('best-score').innerText = bestScore;
-                
-                if (tg && tg.CloudStorage) {
-                    tg.CloudStorage.setItem('best_score_2048', String(bestScore));
-                }
-
-                // Отправляем на сервер с именем пользователя
+                bestScore = score; document.getElementById('best-score').innerText = bestScore;
                 fetch(`${SERVER_URL}/save_score`, { 
-                    method: "POST", 
-                    headers: { "Content-Type": "application/json" }, 
+                    method: "POST", headers: { "Content-Type": "application/json" }, 
                     body: JSON.stringify({ user_id: userId, username: userName, score: bestScore }) 
                 }).catch(e => {});
             }
@@ -385,11 +227,7 @@
         function slide(row) {
             let arr = row.filter(val => val);
             for (let i = 0; i < arr.length - 1; i++) {
-                if (arr[i] === arr[i + 1]) {
-                    arr[i] *= 2;
-                    updateScore(arr[i]);
-                    arr[i + 1] = 0;
-                }
+                if (arr[i] === arr[i + 1]) { arr[i] *= 2; updateScore(arr[i]); arr[i + 1] = 0; }
             }
             arr = arr.filter(val => val);
             while (arr.length < 4) arr.push(0);
@@ -397,9 +235,7 @@
         }
 
         function move(direction) {
-            let oldBoardStr = JSON.stringify(board);
-            let oldScore = score;
-
+            let oldStr = JSON.stringify(board); let oldScore = score;
             if (direction === 'left' || direction === 'right') {
                 for (let i = 0; i < 4; i++) {
                     let row = [...board[i]];
@@ -414,76 +250,40 @@
                     if (direction === 'down') col.reverse();
                     let newCol = slide(col);
                     if (direction === 'down') newCol.reverse();
-                    
-                    for (let r = 0; r < 4; r++) {
-                        board[r][c] = newCol[r];
-                    }
+                    for (let r = 0; r < 4; r++) board[r][c] = newCol[r];
                 }
             }
-
-            if (oldBoardStr !== JSON.stringify(board)) {
-                // Сохраняем состояние для отмены
-                previousBoard = oldBoardStr;
-                previousScore = oldScore;
-                updateUndoButton();
-
-                addTile();
-                drawBoard();
-                checkGameOver();
+            if (oldStr !== JSON.stringify(board)) {
+                previousBoard = oldStr; previousScore = oldScore; updateUndoButton();
+                addTile(); drawBoard(); checkGameOver();
             }
         }
 
         function checkGameOver() {
-            for (let r = 0; r < 4; r++) {
-                for (let c = 0; c < 4; c++) {
-                    if (board[r][c] === 0) return;
-                    if (r < 3 && board[r][c] === board[r + 1][c]) return;
-                    if (c < 3 && board[r][c] === board[r][c + 1]) return;
-                }
+            for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+                if (board[r][c] === 0) return;
+                if (r < 3 && board[r][c] === board[r + 1][c]) return;
+                if (c < 3 && board[r][c] === board[r][c + 1]) return;
             }
-            if(tg && tg.showAlert) tg.showAlert(`Игра окончена! Счет: ${score}`);
-            else alert(`Игра окончена! Счет: ${score}`);
-            
-            showMenu(); 
-            initGame();
+            if(tg && tg.showAlert) tg.showAlert(`Игра окончена! Счет: ${score}`); else alert(`Игра окончена! Счет: ${score}`);
+            showMenu(); initGame();
         }
 
-        // --- Управление свайпами ---
-        let startX = 0;
-        let startY = 0;
-
+        let startX = 0, startY = 0;
         window.addEventListener('touchstart', (e) => {
             if (document.getElementById('menu-screen-overlay').style.display !== 'none') return;
-            startX = e.changedTouches[0].clientX;
-            startY = e.changedTouches[0].clientY;
+            startX = e.changedTouches[0].clientX; startY = e.changedTouches[0].clientY;
         }, { passive: true });
-
         window.addEventListener('touchend', (e) => {
             if (document.getElementById('menu-screen-overlay').style.display !== 'none') return;
             if (!startX || !startY) return;
-
-            let endX = e.changedTouches[0].clientX;
-            let endY = e.changedTouches[0].clientY;
-
-            let diffX = endX - startX;
-            let diffY = endY - startY;
-
-            if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (Math.abs(diffX) > 30) {
-                    move(diffX > 0 ? 'right' : 'left');
-                }
-            } else {
-                if (Math.abs(diffY) > 30) {
-                    move(diffY > 0 ? 'down' : 'up');
-                }
-            }
-
-            startX = 0;
-            startY = 0;
+            let dX = e.changedTouches[0].clientX - startX, dY = e.changedTouches[0].clientY - startY;
+            if (Math.abs(dX) > Math.abs(dY)) { if (Math.abs(dX) > 30) move(dX > 0 ? 'right' : 'left'); } 
+            else { if (Math.abs(dY) > 30) move(dY > 0 ? 'down' : 'up'); }
+            startX = 0; startY = 0;
         }, { passive: true });
 
-        loadData();
-        initGame();
+        loadData(); initGame();
     </script>
 </body>
 </html>

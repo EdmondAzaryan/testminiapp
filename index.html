@@ -19,7 +19,16 @@
             overflow: hidden;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s;
         }
+
+        /* ================= СТИЛИ ЗОЛОТОЙ ТЕМЫ (ИЗ МАГАЗИНА) ================= */
+        body.theme-gold { background-color: #fff9e6; color: #b8860b; }
+        body.theme-gold #menu-screen-overlay { background-color: #fff9e6; }
+        body.theme-gold #game-container { background-color: #ffd700; border: 3px solid #daa520; }
+        body.theme-gold .grid-cell { background: rgba(255, 255, 255, 0.5); }
+        body.theme-gold .score-box { background: #daa520; }
+        body.theme-gold .menu-title-text { color: #daa520; }
 
         /* ================= СТИЛИ МЕНЮ (ПОВЕРХ ИГРЫ) ================= */
         #menu-screen-overlay {
@@ -51,7 +60,8 @@
             transition: transform 0.1s;
         }
         .menu-btn-base:active { transform: scale(0.97); }
-        .btn-ads { background-color: #ea5e6a; margin-bottom: 50px; }
+        .btn-ads { background-color: #ea5e6a; margin-bottom: 30px; }
+        .btn-shop { background-color: #f0925c; margin-bottom: 40px; }
         .btn-cont { background-color: #e88f5d; margin-bottom: 15px; }
         .btn-rest { background-color: #cd6a3d; width: 250px; }
         .menu-subtitle {
@@ -59,7 +69,7 @@
             text-transform: uppercase; margin-bottom: 10px;
         }
         .menu-split-container {
-            display: flex; width: 320px; height: 65px; margin-bottom: 50px;
+            display: flex; width: 320px; height: 65px; margin-bottom: 30px;
         }
         .split-left {
             flex: 0 0 calc(50% + 14px); background-color: #a05ef8;
@@ -89,7 +99,11 @@
             flex-direction: column;
             gap: 5px;
         }
-        .btn-back-menu {
+        .btn-row {
+            display: flex;
+            gap: 5px;
+        }
+        .btn-back-menu, .btn-undo {
             background: #8f7a66;
             color: white;
             border: none;
@@ -98,6 +112,10 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 12px;
+        }
+        .btn-undo:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
         .score-container {
             display: flex;
@@ -181,6 +199,10 @@
             <button class="split-right" onclick="alert('Мультиплеер')">МУЛЬТИПЛЕЕР<br>VS</button>
         </div>
 
+        <button class="menu-btn-base btn-shop" onclick="openTelegramShop()">
+            🛒 МАГАЗИН (Telegram ⭐)
+        </button>
+
         <button class="menu-btn-base btn-cont" onclick="hideMenuAndPlay()">
             ПРОДОЛЖИТЬ ▶
         </button>
@@ -193,7 +215,10 @@
     <div class="header">
         <div class="header-left">
             <h2 style="margin:0;">2048</h2>
-            <button class="btn-back-menu" onclick="showMenu()">В МЕНЮ</button>
+            <div class="btn-row">
+                <button class="btn-back-menu" onclick="showMenu()">В МЕНЮ</button>
+                <button class="btn-undo" id="btn-undo" onclick="useUndo()" disabled>🔙 Назад (0)</button>
+            </div>
         </div>
         <div class="score-container">
             <div class="score-box">СЧЕТ<span id="score">0</span></div>
@@ -226,35 +251,85 @@
             }
         }
 
-        // --- Логика Игры ---
+        function openTelegramShop() {
+            if(tg && tg.sendData) {
+                tg.showAlert("Перейди в чат с ботом и напиши /shop для покупок за Telegram Stars!");
+            } else {
+                alert("Покупки доступны только внутри Telegram.");
+            }
+        }
+
+        // --- Логика Игры и API ---
         const tg = window.Telegram?.WebApp;
         if (tg) {
             tg.ready();
             if(tg.expand) tg.expand();
         }
         const userId = tg?.initDataUnsafe?.user?.id || 12345;
-        const SERVER_URL = "http://localhost:8000";
+        const userName = tg?.initDataUnsafe?.user?.username || tg?.initDataUnsafe?.user?.first_name || "Unknown";
+        
+        // ВАЖНО: Замени localhost на твою ссылку из localtunnel/ngrok!
+        const SERVER_URL = "http://localhost:8000"; 
         
         let board = Array(4).fill().map(() => Array(4).fill(0));
         let score = 0;
         let bestScore = 0;
 
-        if (tg && tg.CloudStorage) {
-            tg.CloudStorage.getItem('best_score_2048', (err, value) => {
-                if (!err && value) {
-                    bestScore = parseInt(value, 10);
-                    document.getElementById('best-score').innerText = bestScore;
-                }
-            });
+        // Переменные для магазина
+        let inventory = { undos: 0, theme: 'default' };
+        let previousBoard = null;
+        let previousScore = 0;
+
+        // Загрузка инвентаря с Flask сервера
+        function loadData() {
+            if (tg && tg.CloudStorage) {
+                tg.CloudStorage.getItem('best_score_2048', (err, value) => {
+                    if (!err && value) {
+                        bestScore = parseInt(value, 10);
+                        document.getElementById('best-score').innerText = bestScore;
+                    }
+                });
+            }
+
+            fetch(`${SERVER_URL}/get_inventory/${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    inventory = data;
+                    if (inventory.theme === 'gold') {
+                        document.body.classList.add('theme-gold');
+                    }
+                    updateUndoButton();
+                }).catch(e => console.log("Не удалось загрузить инвентарь:", e));
+        }
+
+        function updateUndoButton() {
+            const btn = document.getElementById('btn-undo');
+            btn.innerText = `🔙 Назад (${inventory.undos})`;
+            btn.disabled = inventory.undos <= 0 || !previousBoard;
         }
 
         function initGame() {
             board = Array(4).fill().map(() => Array(4).fill(0));
             score = 0;
+            previousBoard = null;
             document.getElementById('score').innerText = 0;
+            updateUndoButton();
             addTile();
             addTile();
             drawBoard();
+        }
+
+        function useUndo() {
+            if (inventory.undos > 0 && previousBoard) {
+                inventory.undos--; // Локальное списание
+                board = JSON.parse(previousBoard);
+                score = previousScore;
+                document.getElementById('score').innerText = score;
+                
+                previousBoard = null; // 1 отмена за раз
+                updateUndoButton();
+                drawBoard();
+            }
         }
 
         function addTile() {
@@ -298,10 +373,11 @@
                     tg.CloudStorage.setItem('best_score_2048', String(bestScore));
                 }
 
+                // Отправляем на сервер с именем пользователя
                 fetch(`${SERVER_URL}/save_score`, { 
                     method: "POST", 
                     headers: { "Content-Type": "application/json" }, 
-                    body: JSON.stringify({ user_id: userId, score: bestScore }) 
+                    body: JSON.stringify({ user_id: userId, username: userName, score: bestScore }) 
                 }).catch(e => {});
             }
         }
@@ -321,7 +397,8 @@
         }
 
         function move(direction) {
-            let oldBoard = JSON.stringify(board);
+            let oldBoardStr = JSON.stringify(board);
+            let oldScore = score;
 
             if (direction === 'left' || direction === 'right') {
                 for (let i = 0; i < 4; i++) {
@@ -344,7 +421,12 @@
                 }
             }
 
-            if (oldBoard !== JSON.stringify(board)) {
+            if (oldBoardStr !== JSON.stringify(board)) {
+                // Сохраняем состояние для отмены
+                previousBoard = oldBoardStr;
+                previousScore = oldScore;
+                updateUndoButton();
+
                 addTile();
                 drawBoard();
                 checkGameOver();
@@ -362,7 +444,7 @@
             if(tg && tg.showAlert) tg.showAlert(`Игра окончена! Счет: ${score}`);
             else alert(`Игра окончена! Счет: ${score}`);
             
-            showMenu(); // Возвращаем в меню при проигрыше
+            showMenu(); 
             initGame();
         }
 
@@ -371,9 +453,7 @@
         let startY = 0;
 
         window.addEventListener('touchstart', (e) => {
-            // Блокируем свайпы, если меню открыто
             if (document.getElementById('menu-screen-overlay').style.display !== 'none') return;
-            
             startX = e.changedTouches[0].clientX;
             startY = e.changedTouches[0].clientY;
         }, { passive: true });
@@ -402,6 +482,7 @@
             startY = 0;
         }, { passive: true });
 
+        loadData();
         initGame();
     </script>
 </body>

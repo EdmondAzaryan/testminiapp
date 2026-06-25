@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>2048 Telegram Game</title>
-    <!-- Официальный скрипт Telegram Mini Apps API -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -19,13 +18,86 @@
             margin: 0;
             overflow: hidden;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
+
+        /* ================= СТИЛИ МЕНЮ (ПОВЕРХ ИГРЫ) ================= */
+        #menu-screen-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #faf8ef;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 60px;
+            box-sizing: border-box;
+        }
+        .menu-btn-settings {
+            position: absolute; top: 15px; left: 0;
+            background-color: #f0925c; color: white;
+            border: none; border-radius: 0 8px 8px 0;
+            padding: 10px 15px; font-size: 24px; cursor: pointer;
+        }
+        .menu-title-text {
+            color: #776e65; font-size: 42px; font-weight: 900;
+            margin-bottom: 40px; letter-spacing: 2px;
+        }
+        .menu-btn-base {
+            width: 280px; border: none; border-radius: 6px;
+            color: white; font-size: 18px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; padding: 15px; cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .menu-btn-base:active { transform: scale(0.97); }
+        .btn-ads { background-color: #ea5e6a; margin-bottom: 50px; }
+        .btn-cont { background-color: #e88f5d; margin-bottom: 15px; }
+        .btn-rest { background-color: #cd6a3d; width: 250px; }
+        .menu-subtitle {
+            color: #a39b92; font-size: 12px; font-weight: bold;
+            text-transform: uppercase; margin-bottom: 10px;
+        }
+        .menu-split-container {
+            display: flex; width: 320px; height: 65px; margin-bottom: 50px;
+        }
+        .split-left {
+            flex: 0 0 calc(50% + 14px); background-color: #a05ef8;
+            border: none; color: white; font-weight: bold; font-size: 20px;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 28px) 100%, 0 100%);
+            border-radius: 6px 0 0 6px; padding-right: 20px; cursor: pointer;
+        }
+        .split-right {
+            flex: 0 0 calc(50% + 14px); background-color: #61a0f8;
+            border: none; color: white; font-weight: bold; font-size: 14px;
+            margin-left: -24px;
+            clip-path: polygon(28px 0, 100% 0, 100% 100%, 0 100%);
+            border-radius: 0 6px 6px 0; padding-left: 20px; cursor: pointer;
+        }
+        .split-left:active, .split-right:active { opacity: 0.8; }
+
+        /* ================= СТИЛИ ИГРЫ ================= */
         .header {
             width: 320px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+        }
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .btn-back-menu {
+            background: #8f7a66;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
         }
         .score-container {
             display: flex;
@@ -94,8 +166,35 @@
 </head>
 <body>
 
+    <div id="menu-screen-overlay">
+        <button class="menu-btn-settings" onclick="alert('Настройки')">⚙</button>
+
+        <div class="menu-title-text">МЕНЮ</div>
+
+        <button class="menu-btn-base btn-ads" onclick="alert('Без рекламы')">
+            🚫 БЕЗ РЕКЛАМЫ
+        </button>
+
+        <div class="menu-subtitle">Другие режимы игры</div>
+        <div class="menu-split-container">
+            <button class="split-left" onclick="alert('Вызовы')">ВЫЗОВЫ</button>
+            <button class="split-right" onclick="alert('Мультиплеер')">МУЛЬТИПЛЕЕР<br>VS</button>
+        </div>
+
+        <button class="menu-btn-base btn-cont" onclick="hideMenuAndPlay()">
+            ПРОДОЛЖИТЬ ▶
+        </button>
+        
+        <button class="menu-btn-base btn-rest" onclick="restartFromMenu()">
+            ↻ ПЕРЕЗАПУСТИТЬ
+        </button>
+    </div>
+
     <div class="header">
-        <h2 style="margin:0;">2048</h2>
+        <div class="header-left">
+            <h2 style="margin:0;">2048</h2>
+            <button class="btn-back-menu" onclick="showMenu()">В МЕНЮ</button>
+        </div>
         <div class="score-container">
             <div class="score-box">СЧЕТ<span id="score">0</span></div>
             <div class="score-box">РЕКОРД<span id="best-score">0</span></div>
@@ -111,6 +210,23 @@
     </div>
 
     <script>
+        // --- Логика Меню ---
+        function hideMenuAndPlay() {
+            document.getElementById('menu-screen-overlay').style.display = 'none';
+        }
+
+        function showMenu() {
+            document.getElementById('menu-screen-overlay').style.display = 'flex';
+        }
+
+        function restartFromMenu() {
+            if(confirm("Начать новую игру? Текущий счет сбросится.")) {
+                initGame();
+                hideMenuAndPlay();
+            }
+        }
+
+        // --- Логика Игры ---
         const tg = window.Telegram?.WebApp;
         if (tg) {
             tg.ready();
@@ -123,7 +239,6 @@
         let score = 0;
         let bestScore = 0;
 
-        // Загрузка лучшего рекорда из бесплатного облака Telegram CloudStorage
         if (tg && tg.CloudStorage) {
             tg.CloudStorage.getItem('best_score_2048', (err, value) => {
                 if (!err && value) {
@@ -172,7 +287,7 @@
             }
         }
 
-               function updateScore(amount) {
+         function updateScore(amount) {
             score += amount;
             document.getElementById('score').innerText = score;
             if (score > bestScore) {
@@ -183,23 +298,13 @@
                     tg.CloudStorage.setItem('best_score_2048', String(bestScore));
                 }
 
-                // Получаем имя игрока из Telegram, если его нет — пишем "Игрок"
-                const userName = tg?.initDataUnsafe?.user?.first_name || "Игрок";
-
-                // Отправляем очки и имя на Flask-сервер
                 fetch(`${SERVER_URL}/save_score`, { 
                     method: "POST", 
                     headers: { "Content-Type": "application/json" }, 
-                    body: JSON.stringify({ 
-                        user_id: userId, 
-                        username: userName, // Добавили передачу имени
-                        score: bestScore 
-                    }) 
+                    body: JSON.stringify({ user_id: userId, score: bestScore }) 
                 }).catch(e => {});
             }
         }
-
-
 
         function slide(row) {
             let arr = row.filter(val => val);
@@ -256,19 +361,25 @@
             }
             if(tg && tg.showAlert) tg.showAlert(`Игра окончена! Счет: ${score}`);
             else alert(`Игра окончена! Счет: ${score}`);
+            
+            showMenu(); // Возвращаем в меню при проигрыше
             initGame();
         }
 
-        // Логика обработки мобильных свайпов
+        // --- Управление свайпами ---
         let startX = 0;
         let startY = 0;
 
         window.addEventListener('touchstart', (e) => {
+            // Блокируем свайпы, если меню открыто
+            if (document.getElementById('menu-screen-overlay').style.display !== 'none') return;
+            
             startX = e.changedTouches[0].clientX;
             startY = e.changedTouches[0].clientY;
         }, { passive: true });
 
         window.addEventListener('touchend', (e) => {
+            if (document.getElementById('menu-screen-overlay').style.display !== 'none') return;
             if (!startX || !startY) return;
 
             let endX = e.changedTouches[0].clientX;
